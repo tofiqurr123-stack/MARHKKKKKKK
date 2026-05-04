@@ -7,7 +7,7 @@ export const Footer = () => (
         <Hexagon className="h-5 w-5 text-primary" />
         <span>Hexa.ai — Universal AI Platform · 200+ tools</span>
       </div>
-      <p>© {new Date().getFullYear()} Hexa.ai · Built with Lovable</p>
+      <p>© {new Date().getFullYear()} Hexa.ai · Founded by MD Tofiqur Rahman</p>
     </div>
   </footer>
 );
