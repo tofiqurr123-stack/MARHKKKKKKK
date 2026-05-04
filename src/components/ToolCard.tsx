@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Tool } from "@/data/tools";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { iconForCategory } from "@/data/toolIcons";
 
 interface Props {
   tool: Tool;
@@ -12,11 +13,11 @@ export const ToolCard = ({ tool, accent }: Props) => {
   const ringColor = accent ? `hsl(${accent})` : "hsl(var(--primary))";
   const bgColor = accent ? `hsl(${accent} / 0.1)` : "hsl(var(--primary) / 0.1)";
   const borderColor = accent ? `hsl(${accent} / 0.3)` : "hsl(var(--primary) / 0.3)";
+  const Icon = iconForCategory(tool.category);
   return (
     <Link
       to={`/tool/${tool.slug}`}
       className="group relative overflow-hidden rounded-xl border border-border/60 bg-gradient-card p-5 transition-all hover:-translate-y-0.5"
-      style={{ ['--tw-shadow-color' as any]: ringColor }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = ringColor; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = ""; }}
     >
@@ -27,10 +28,10 @@ export const ToolCard = ({ tool, accent }: Props) => {
       <div className="relative flex flex-col h-full gap-3">
         <div className="flex items-start justify-between">
           <div
-            className="h-10 w-10 rounded-lg border flex items-center justify-center"
+            className="h-11 w-11 rounded-xl border flex items-center justify-center hex-clip"
             style={{ background: bgColor, borderColor }}
           >
-            <Sparkles className="h-5 w-5" style={{ color: ringColor }} />
+            <Icon className="h-5 w-5" style={{ color: ringColor }} />
           </div>
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground px-2 py-0.5 rounded-full border border-border/60">
             {tool.category}
