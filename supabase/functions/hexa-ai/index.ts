@@ -7,11 +7,18 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages, system, mode } = await req.json();
+    const { messages, system, mode, model: clientModel } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY missing");
 
-    const model = mode === "image" ? "google/gemini-2.5-flash-image" : "google/gemini-3-flash-preview";
+    const ALLOWED = new Set([
+      "google/gemini-2.5-flash", "google/gemini-2.5-pro", "google/gemini-2.5-flash-lite",
+      "google/gemini-3-flash-preview", "google/gemini-3.1-pro-preview",
+      "openai/gpt-5", "openai/gpt-5-mini", "openai/gpt-5-nano", "openai/gpt-5.2",
+    ]);
+    const model = mode === "image"
+      ? "google/gemini-2.5-flash-image"
+      : (clientModel && ALLOWED.has(clientModel) ? clientModel : "google/gemini-3-flash-preview");
 
     const body: any = {
       model,
