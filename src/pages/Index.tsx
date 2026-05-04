@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { TOOLS, CATEGORIES } from "@/data/tools";
+import { TOOLS } from "@/data/tools";
+import { CATEGORY_LIST } from "@/data/categoryMeta";
 import { ToolCard } from "@/components/ToolCard";
 import { ChatPanel } from "@/components/ChatPanel";
 import { Hexagon, Sparkles, GraduationCap, Briefcase, Sprout, Rocket, ArrowRight, Search } from "lucide-react";
@@ -115,19 +116,22 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CATEGORIES */}
+      {/* FOLDERS */}
       <section className="container py-12">
-        <h2 className="text-3xl font-bold mb-6">Browse by category</h2>
+        <h2 className="text-3xl font-bold mb-6">Browse by folder</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {CATEGORIES.map(cat => {
-            const count = TOOLS.filter(t => t.category === cat).length;
+          {CATEGORY_LIST.map(cat => {
+            const count = TOOLS.filter(t => t.category === cat.category).length;
+            const Icon = cat.icon;
             return (
               <button
-                key={cat}
-                onClick={() => nav(`/tools?cat=${encodeURIComponent(cat)}`)}
-                className="text-left rounded-xl border border-border/60 bg-gradient-card p-4 hover:border-primary/60 hover:shadow-glow transition-all"
+                key={cat.slug}
+                onClick={() => nav(`/folder/${cat.slug}`)}
+                className="text-left rounded-xl border border-border/60 p-4 transition-all hover:-translate-y-0.5"
+                style={{ background: `linear-gradient(135deg, hsl(${cat.accent} / 0.1), transparent)` }}
               >
-                <div className="text-sm font-semibold">{cat}</div>
+                <Icon className="h-5 w-5 mb-2" style={{ color: `hsl(${cat.accent})` }} />
+                <div className="text-sm font-semibold">{cat.category}</div>
                 <div className="text-xs text-muted-foreground mt-1">{count} tools</div>
               </button>
             );
