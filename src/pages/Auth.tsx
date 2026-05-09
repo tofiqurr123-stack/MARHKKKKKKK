@@ -171,7 +171,7 @@ const Auth = () => {
             </div>
           )}
 
-          {(mode !== "admin" || !user) && (
+          {mode !== "admin" && (
             <div>
               <Label htmlFor="email">Email</Label>
               <div className="relative">
