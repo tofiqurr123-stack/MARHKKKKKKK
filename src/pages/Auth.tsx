@@ -35,10 +35,12 @@ const Auth = () => {
     setLoading(true);
     try {
       if (mode === "admin") {
+        // Sign in (or ensure signed in) then verify passkey in one step
         if (!user) {
-          toast({ title: "Sign in first", description: "Sign in, then enter your admin passkey.", variant: "destructive" });
-          setMode("signin");
-          return;
+          const parsed = schema.safeParse({ email, password });
+          if (!parsed.success) throw new Error(parsed.error.errors[0].message);
+          const { error: signErr } = await supabase.auth.signInWithPassword({ email, password });
+          if (signErr) throw signErr;
         }
         const { data, error } = await supabase.functions.invoke("verify-admin-passkey", { body: { passkey } });
         if (error || (data as any)?.error) throw new Error((data as any)?.error || error?.message || "Failed");
