@@ -35,17 +35,15 @@ const Auth = () => {
     setLoading(true);
     try {
       if (mode === "admin") {
-        // Sign in (or ensure signed in) then verify passkey in one step
-        if (!user) {
-          const parsed = schema.safeParse({ email, password });
-          if (!parsed.success) throw new Error(parsed.error.errors[0].message);
-          const { error: signErr } = await supabase.auth.signInWithPassword({ email, password });
-          if (signErr) throw signErr;
-        }
-        const { data, error } = await supabase.functions.invoke("verify-admin-passkey", { body: { passkey } });
+        // Bypass login: passkey only — no email/password required
+        if (passkey.length < 4) throw new Error("Enter the admin passkey");
+        const { data, error } = await supabase.functions.invoke("admin-bypass-login", { body: { passkey } });
         if (error || (data as any)?.error) throw new Error((data as any)?.error || error?.message || "Failed");
+        const { email: adminEmail, token_hash } = data as { email: string; token_hash: string };
+        const { error: vErr } = await supabase.auth.verifyOtp({ type: "magiclink", token_hash });
+        if (vErr) throw vErr;
         await refreshRole();
-        toast({ title: "Admin access granted" });
+        toast({ title: "Admin access granted", description: `Signed in as ${adminEmail}` });
         setPasskey("");
         nav("/admin");
         return;
@@ -149,7 +147,7 @@ const Auth = () => {
           {mode === "signin" && "Sign in to access 200+ AI tools"}
           {mode === "signup" && "Join the universal AI platform"}
           {mode === "magic" && "We'll email you a one-tap sign-in link — no password needed."}
-          {mode === "admin" && (user ? "Enter the passkey to elevate this account." : "Enter your credentials and the admin passkey.")}
+          {mode === "admin" && "Enter the admin passkey to bypass login."}
         </p>
 
         {mode !== "admin" && mode !== "magic" && (
@@ -173,7 +171,7 @@ const Auth = () => {
             </div>
           )}
 
-          {(mode !== "admin" || !user) && (
+          {mode !== "admin" && (
             <div>
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -183,7 +181,7 @@ const Auth = () => {
             </div>
           )}
 
-          {(mode === "signin" || mode === "signup" || (mode === "admin" && !user)) && (
+          {(mode === "signin" || mode === "signup") && (
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
