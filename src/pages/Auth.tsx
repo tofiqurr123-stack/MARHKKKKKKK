@@ -173,7 +173,7 @@ const Auth = () => {
             </div>
           )}
 
-          {mode !== "admin" && (
+          {(mode !== "admin" || !user) && (
             <div>
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -183,7 +183,7 @@ const Auth = () => {
             </div>
           )}
 
-          {(mode === "signin" || mode === "signup") && (
+          {(mode === "signin" || mode === "signup" || (mode === "admin" && !user)) && (
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
@@ -214,7 +214,7 @@ const Auth = () => {
             </div>
           )}
 
-          <Button type="submit" disabled={loading || (mode === "admin" && !user)} className="w-full bg-gradient-primary">
+          <Button type="submit" disabled={loading} className="w-full bg-gradient-primary">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
               mode === "signin" ? "Sign in" :
               mode === "signup" ? "Create account" :
