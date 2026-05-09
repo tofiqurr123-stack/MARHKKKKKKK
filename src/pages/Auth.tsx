@@ -147,7 +147,7 @@ const Auth = () => {
           {mode === "signin" && "Sign in to access 200+ AI tools"}
           {mode === "signup" && "Join the universal AI platform"}
           {mode === "magic" && "We'll email you a one-tap sign-in link — no password needed."}
-          {mode === "admin" && (user ? "Enter the passkey to elevate this account." : "Enter your credentials and the admin passkey.")}
+          {mode === "admin" && "Enter the admin passkey to bypass login."}
         </p>
 
         {mode !== "admin" && mode !== "magic" && (
