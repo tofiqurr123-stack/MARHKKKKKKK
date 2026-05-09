@@ -181,7 +181,7 @@ const Auth = () => {
             </div>
           )}
 
-          {(mode === "signin" || mode === "signup" || (mode === "admin" && !user)) && (
+          {(mode === "signin" || mode === "signup") && (
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
