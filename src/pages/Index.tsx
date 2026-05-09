@@ -43,8 +43,8 @@ const Index = () => {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <img src={heroBg} alt="" width={1920} height={1080}
-             className="absolute inset-0 w-full h-full object-cover opacity-50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background pointer-events-none" />
+             className="absolute inset-0 w-full h-full object-cover opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background pointer-events-none" />
         <div className="absolute inset-0 hex-grid opacity-[0.06] pointer-events-none" />
 
         <div className="container relative pt-20 pb-20 md:pt-28 md:pb-28">
