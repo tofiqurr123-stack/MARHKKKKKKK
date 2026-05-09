@@ -35,10 +35,12 @@ const Auth = () => {
     setLoading(true);
     try {
       if (mode === "admin") {
+        // Sign in (or ensure signed in) then verify passkey in one step
         if (!user) {
-          toast({ title: "Sign in first", description: "Sign in, then enter your admin passkey.", variant: "destructive" });
-          setMode("signin");
-          return;
+          const parsed = schema.safeParse({ email, password });
+          if (!parsed.success) throw new Error(parsed.error.errors[0].message);
+          const { error: signErr } = await supabase.auth.signInWithPassword({ email, password });
+          if (signErr) throw signErr;
         }
         const { data, error } = await supabase.functions.invoke("verify-admin-passkey", { body: { passkey } });
         if (error || (data as any)?.error) throw new Error((data as any)?.error || error?.message || "Failed");
@@ -147,7 +149,7 @@ const Auth = () => {
           {mode === "signin" && "Sign in to access 200+ AI tools"}
           {mode === "signup" && "Join the universal AI platform"}
           {mode === "magic" && "We'll email you a one-tap sign-in link — no password needed."}
-          {mode === "admin" && (user ? "Enter the passkey to elevate this account." : "Sign in first, then return here.")}
+          {mode === "admin" && (user ? "Enter the passkey to elevate this account." : "Enter your credentials and the admin passkey.")}
         </p>
 
         {mode !== "admin" && mode !== "magic" && (
@@ -171,7 +173,7 @@ const Auth = () => {
             </div>
           )}
 
-          {mode !== "admin" && (
+          {(mode !== "admin" || !user) && (
             <div>
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -181,7 +183,7 @@ const Auth = () => {
             </div>
           )}
 
-          {(mode === "signin" || mode === "signup") && (
+          {(mode === "signin" || mode === "signup" || (mode === "admin" && !user)) && (
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
@@ -212,7 +214,7 @@ const Auth = () => {
             </div>
           )}
 
-          <Button type="submit" disabled={loading || (mode === "admin" && !user)} className="w-full bg-gradient-primary">
+          <Button type="submit" disabled={loading} className="w-full bg-gradient-primary">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
               mode === "signin" ? "Sign in" :
               mode === "signup" ? "Create account" :
