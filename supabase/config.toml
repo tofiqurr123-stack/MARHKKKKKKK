@@ -1,1 +1,4 @@
 project_id = "axdcyfvianusvmrkthis"
+
+[functions.admin-bypass-login]
+verify_jwt = false
